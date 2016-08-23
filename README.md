@@ -30,6 +30,7 @@ $ cd ~
 
 Git.io
 ![Git.io](http://i.imgur.com/6JUfbcG.png?1)
+![Git.io](https://git.io/v69xv)
 
 We will copy locally all files from the Github
 
@@ -53,16 +54,17 @@ a = c + d
 - [ ] save poor skelets that are dieing
 - [ ] find why we cannot shoot them 
 
-Yeah ! :+1:
-
 and remember :
   - :chicken: Little Endian = 20 00 00 00
   -  :cow: Little Endian = 20 00 00 00
   -  :sheep:
   -  ::
 
+In the words of Abraham Lincoln:
+> Pardon my French
 
 
+Yeah ! :+1:
 
 
 
