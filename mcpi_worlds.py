@@ -125,6 +125,7 @@ def renameMCPI_World(mcpi_selected_world):
 
 
 def get_MCPI_Help():
-    return "Do you need help ?! Uh ?"
+    return "Do you need help ?! Uh ? Go there then " +\
+           "https://github.com/Will-777/spawn_mobs_mcpi"
 
 

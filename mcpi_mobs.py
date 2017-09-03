@@ -52,6 +52,7 @@ except ImportError:
 mobs_pass_dict = {'Chicken' : b'\x0A\x00\x00\x00', 'Cow' : b'\x0B\x00\x00\x00',
                   'Pig' : b'\x0C\x00\x00\x00', 'Sheep' : b'\x0D\x00\x00\x00' }
 
+# don't change the space into this dic for Zombie Pigman entry. I later sanitize input with .title()
 mobs_agress_dict = {'Zombie' : b'\x20\x00\x00\x00', 'Creeper' : b'\x21\x00\x00\x00',
                     'Skeleton' : b'\x22\x00\x00\x00', 'Spider' : b'\x23\x00\x00\x00',
                     'Zombie Pigman' : b'\x24\x00\x00\x00'}
@@ -97,6 +98,10 @@ def about_mobs(dic1 = mobs_pass_dict, dic2 = mobs_agress_dict):
 class mcpi_mobs_mgr(object):    
     global Mobs_ID
     Mobs_ID = b'\x69\x64'
+    global NBTTAG_Number_Of_Mobs_Empty, NBTTAG_Number_Of_Mobs_One, NBTTAG_Number_Of_Mobs_Any
+    NBTTAG_Number_Of_Mobs_Empty = "\x00\x01\x00\x00"
+    NBTTAG_Number_Of_Mobs_One = "\n\x01\x00\x00"
+    NBTTAG_Number_Of_Mobs_Any = "\n\xee\x00\x00"
 
     def __init__(self, filename ='entities.dat'):
         self.filename = filename
@@ -109,6 +114,9 @@ class mcpi_mobs_mgr(object):
         self.no = ['no', 'n']
         self.Mobs_ID = Mobs_ID
 
+        # All the NBT date from file
+        self.NBT_ALL = self.entitiesFileData[:]
+        
         # Header of the NBT file entities
         self.NBT_Header = self.entitiesFileData[:26]
         # Be careful : if you have items, you will have to adjust
@@ -130,6 +138,16 @@ class mcpi_mobs_mgr(object):
         """
         NBT_ALL = self.NBT_Header + self.NBT_Body + self.NBT_Footer
         return ":".join("{:02x}".format(ord(c)) for c in NBT_ALL)
+
+
+    def NBT_All(self):
+        """
+        :return:
+         the NBT info
+        """
+        self.NBT_ALL = self.NBT_Header + self.NBT_Body + self.NBT_Footer
+        return (self.NBT_ALL)
+
     
 
     #### MOBS List ####
@@ -231,6 +249,9 @@ class mcpi_mobs_mgr(object):
         :return: will add NBT info to body. return none
 
         """
+        # Call the global variable
+        global NBTTAG_Number_Of_Mobs_Empty, NBTTAG_Number_Of_Mobs_One, NBTTAG_Number_Of_Mobs_Any
+        
         # Mobs_Separator
         NBTTAG_Mobs_Passive_Separator = "\x00\x03\x03\x00"
         # Another Mobs_Separator
@@ -238,9 +259,9 @@ class mcpi_mobs_mgr(object):
 
         # NUMBER OF MOBS HERE \x01 for 1x Mobs, \x02 for 2x, etc...
         # Number_Of_Mobs = "\n\xee\x00\x00" is your friend !
-        NBTTAG_Number_Of_Mobs_Empty = "\x00\x01\x00\x00"
-        NBTTAG_Number_Of_Mobs_One = "\n\x01\x00\x00"
-        self.NBTTAG_Number_Of_Mobs_Any = "\n\xee\x00\x00"
+        #self.NBTTAG_Number_Of_Mobs_Empty = "\x00\x01\x00\x00"
+        #self.NBTTAG_Number_Of_Mobs_One = "\n\x01\x00\x00"
+        #self.NBTTAG_Number_Of_Mobs_Any = "\n\xee\x00\x00"
 
         # Default position will be x = , y = , z =
         # "Pos\x05\x03\x00\x00\x00^W\x1bC\x00\x00\x86B\xd7\x07\xccB\t\x08\x00"
@@ -275,6 +296,7 @@ class mcpi_mobs_mgr(object):
 
         # Default POS around : 26.1 / 14.5 / -25.6
         # "\n\x01\x00\x00\x00\x03\x03\x00" +\
+        # >>> Pos\x05\x03\x00\x00\x00^W\x1bC\x00\x00\x86B\xd7\x07\xccB\t\x08\x00
         Mobs_Template_Pig = "Age\x00\x00\x00\x00\x02\x03\x00" +\
                             "Air,\x01\x02\n\x00" +\
                             "AttackTime\x00\x00\x02\t\x00" +\
@@ -290,6 +312,7 @@ class mcpi_mobs_mgr(object):
                             "id\x0c\x00\x00\x00"
 
         #sheeps has 2x addition values = Sheared and Color
+        # id\0d\x00\x00\x00 but representation of b'\x0d' will turn to \r
         mobs_Template_Sheep = "Age\x00\x00\x00\x00\x02\x03\x00" +\
                               "Air,\x01\x02\n\x00" +\
                               "AttackTime\x00\x00\x01\x05\x00" +\
@@ -308,7 +331,10 @@ class mcpi_mobs_mgr(object):
 
         # If it is Day time, Skelet are going to die quickly...
         # "\n\x02\x00\x00\x00\x02\x03\x00"
-        mobs_Template_Skele = "Air,\x01\x02\n\x00" +\
+        # id\x22\x00\x00\x00 but representation of b'\x22' will turn to '"'
+        # to avoid the mess, use for this portion ' ' for that value
+        mobs_Template_Skele = "Age\x00\x00\x00\x00\x02\x03\x00" +\
+                              "Air,\x01\x02\n\x00" +\
                               "AttackTime<\x00\x02\t\x00" +\
                               "DeathTime\x00\x00\x05\x0c\x00" +\
                               "FallDistance\x00\x00\x00\x00\x02\x04\x00" +\
@@ -319,23 +345,9 @@ class mcpi_mobs_mgr(object):
                               "OnGround\x01\t\x03\x00" +\
                               "Pos\x05\x03\x00\x00\x00\x07\x19\x1bC\x00\x00\x86B @\xd3B\t\x08\x00" +\
                               "Rotation\x05\x02\x00\x00\x00\xa0X\xcd@\x00\x00\xf0\xc1\x03\x02\x00" +\
-                              'id"\x00\x00\x00\x00\x02\x03\x00' +\
-                              "Air,\x01\x05\x0c\x00" +\
-                              "FallDistance\x00\x00\x00\x00\x02\x04\x00" +\
-                              "Fire\x00\x00\t\x06\x00" +\
-                              "Motion\x05\x03\x00\x00\x00\xe4i\x94>g\x1bb?\xfe>\xac>\x01\x08\x00" +\
-                              "OnGround\x00\t\x03\x00" +\
-                              "Pos\x05\x03\x00\x00\x00\x08I\x1bC\xcd\xbe\x8aB:\xc3\xd3B\t\x08\x00" +\
-                              "Rotation\x05\x02\x00\x00\x00f\xff" + '"B' + "\xff\x1a\x81B\x03\x02\x00" +\
-                              "idP\x00\x00\x00\x01\x06\x00" +\
-                              "inData\x00\x01\x08\x00" +\
-                              "inGround\x00\x01\x06\x00" +\
-                              "inTile\x00\x01\x06\x00" +\
-                              "player\x00\x01\x05\x00" +\
-                              "shake\x00\x02\x05\x00x" +\
-                              "Tile\xff\xff\x02\x05\x00" +\
-                              "yTile\xff\xff\x02\x05\x00" +\
-                              "zTile\xff\xff"
+                              'id"\x00\x00\x00'
+
+  
 
         # Spider are "\n\x01\x00\x00\x00\x02\x03\x00" +\
         mobs_Templace_Spider = "Air,\x01\x02\n\x00" +\
@@ -391,87 +403,13 @@ class mcpi_mobs_mgr(object):
                 self.NBT_Body += NBTTAG_Mobs_Passive_Separator + Mobs_Template
 
             print "Mob %s added %dx times to the body." % (Mob_Type, Mob_Number)
-            print "Don't forget to save with saveNewFile()."
+            print "Don't forget to save with myMCPI.saveNewFile()."
             print "Be careful: all or some of data previously"
             print "into your entities.dat file might be deleted."
 
         return 
 
-    """
-    #### MOBS DELETE ####
-    # NOT Implemented yet
-    # del a mob by ID
-    def delMobByID(self, Mob_byID):
-        '''
-        Delete the Mobs from NBT file according its ID number from list.
-        Input  : Mob_byID
-        Output : Binary Data removal
-        Var    :
-            MobsIndex_current (int) 
-            Mobs_size (int) size of the Mob.
-            NBT_Pointer (int)
-            NBT_MobsBody (str) the string that should be deleted.
-        '''
-        print "To see the MobID list, please use .Mobs_list_display()"
-        MobsList_current = self.Mobs_list_make()
-        # print "MobsList_current" , MobsList_current
-        found_Mob_byID = False
-
-        if int(Mob_byID) <= 0 :
-            print "Mob_byID cannot be negative or egal to 0.\nAbort."
-            return
-        
-        for Mobs in MobsList_current:
-            if Mobs[0] == Mob_byID:
-                #m ake the magic
-                found_Mob_byID = True
-                MobsIndex_current = MobsList_current.index(Mobs)
-                if MobsIndex_current <= 1 :
-                   Mobs_size = int(MobsList_current[MobsIndex_current][1]) 
-                else:
-                    # If exist Mob_byID-1 means not the end of the file
-                    Mobs_size = int(MobsList_current[MobsIndex_current][1]) - int(MobsList_current[MobsIndex_current-1][1])
-                print "Info about the mob : %s, size(%s)" % (Mobs[2], Mobs_size )
-                NBT_Pointer = int(Mobs[1])
-                print "NBT_Pointer" , NBT_Pointer
-
-        if not found_Mob_byID :
-            print "Sorry: cannot find existing Mob with ID %s." %(Mob_byID)
-            return
-            
-        NBT_MobsBody = self.NBT_Body[NBT_Pointer-Mobs_size:NBT_Pointer]
-        # print "NBT_MobsBody\n"
-        # print NBT_MobsBody #doesn't work for display
-
-        query = "Are you sure you want to delete this MobID= %s ?[Y/N]" % (Mob_byID)
-        userinput = raw_input(query)
-
-        if userinput in self.yes :                              
-            # DELETE the part of file according MobID
-            # Select the string of the Mob accordeing its 'id' NBT Tag.
-            NBT_MobsBody = self.NBT_Body[NBT_Pointer-Mobs_size:NBT_Pointer]
-            # Delete the characters into the NBT_Body
-            self.NBT_Body = string.replace(self.NBT_Body, NBT_MobsBody, '')
-            # Display the message announcing that the task has been done.
-            print "Don't forget to apply your change by using .saveNewFile()"
-            # newEntitiesFile.close()
-        elif userinput in self.no:
-            return "Action aborted."
-        else :
-            return "Wrong command. Action aborted."   
-        
-        return  "MobID <%s> has been deleted." % (self.Mobs_ID)
-
-    # del a mob by range of ID
-    def delMobRangeByID(self, MobIDfrom, MobIDto):
-        print "Sorry. Not implemented yet."
-        pass    
-
-    # del all mob from race
-    def delMobsByRace(self, MobByRace):
-        print "Sorry. Not implemented yet."
-        pass
-    """
+  
 
     def FileSizeNBTdisplay(self):
         """
@@ -512,13 +450,15 @@ class mcpi_mobs_mgr(object):
         return sizeInNewEntitiesFile
         
 
-    def saveNewFile(self, filename='entities.dat'):
+    def saveNewFile(self, filename='entities.dat', ):
         '''
         To save modified data into a new file
         Input   : entities.dat
         :return: entities.dat (with new data)
 
         '''
+        global NBTTAG_Number_Of_Mobs_Empty, NBTTAG_Number_Of_Mobs_One, NBTTAG_Number_Of_Mobs_Any
+        
         # check File Size
         newEntitiesFileData = self.NBT_Header + self.NBT_Body + self.NBT_Footer
         NewNBTLen = len(newEntitiesFileData) - 12 #delete header 12
@@ -540,8 +480,12 @@ class mcpi_mobs_mgr(object):
             NewNBTlen_LE = NewNBTlen_LE[:4]
             # Update of file size by seeking size Var and Value
             newEntitiesFileData = newEntitiesFileData[:8] + NewNBTlen_LE + newEntitiesFileData[12:]
+
             # NEED to Update the value of Mobs as well
-            newEntitiesFileData = newEntitiesFileData[:26] + self.NBTTAG_Number_Of_Mobs_Any + newEntitiesFileData[30:]
+            # But first... test if you don't update only the Header ^^;
+            if self.NBT_Body == NBTTAG_Number_Of_Mobs_Empty:
+                NBTTAG_Number_Of_Mobs_Any = NBTTAG_Number_Of_Mobs_Empty
+            newEntitiesFileData = newEntitiesFileData[:26] + NBTTAG_Number_Of_Mobs_Any + newEntitiesFileData[30:]
             # Writing into the file
             newEntitiesFile.write(newEntitiesFileData)
 
@@ -557,8 +501,8 @@ class mcpi_mobs_mgr(object):
         fromNow = str(datetime.datetime.now().strftime("%Y%m%d-%Hh%M"))
         backup_name = 'entities.dat.' + fromNow
         os.rename('entities.dat', backup_name)
-        print "File <%s> saved." % (backup_name)
- 
+        return ("File <%s> saved." % (backup_name))
+        
 
 """
 Not implemented yet
@@ -574,6 +518,286 @@ Not implemented yet
         print "Sorry. Not implemented yet."
         pass 
 """
+
+# To start changing your game mode from Creative into Survival
+# myLevel = mcpi_Mode_mgr()
+
+
+class mcpi_Mode_mgr(object):
+    global Mode_ID, NBTTAG_Mode_Creative, NBTTAG_Mode_Survival, GameTypeStr
+
+    # GameType is just after
+    Mode_ID     = b'\x47\x61\x6D\x65\x54\x79\x70\x65'
+    # GameType is just after
+    GameTypeStr = b'\x47\x61\x6D\x65\x54\x79\x70\x65' 
+
+    NBTTAG_Mode_Creative = b'\x01'
+    # "\x01\x00\x00\x00" 
+    NBTTAG_Mode_Survival = b'\x00'
+    # "\x00\x00\x00\x00"
+    #NBTTAG_Number_Of_Mobs_Any = "\n\xee\x00\x00"
+    
+    def __init__(self, levelfilename ='level.dat'):
+        self.levelfilename = levelfilename
+        # For Data
+        self.levelFile = open(mcpi_world_path+'/'+ self.levelfilename, 'rb+')
+        self.levelFileData = self.levelFile.read()
+    
+        # for menu confirmation
+        self.yes = ['yes', 'y', 'ye', '']
+        self.no = ['no', 'n']
+        self.Mode_ID = Mode_ID
+    
+        # Header of the NBT file level 
+        self.NBT_levelHeader = self.levelFileData[:23]
+        # Be careful : if you have items, you will have to adjust
+        # The footer manually
+        self.NBT_levelFooter = self.levelFileData[-22:]
+        self.NBT_levelBody = self.levelFileData[23:-22]
+    
+    def __str__(self):
+        """
+        return message about type
+        """
+        return "This is LEVEL.dat file. Really..."
+
+
+    def NBT_PrintAll(self):
+        """
+        :return:
+         the NBT Level info
+        """
+        NBT_LEVEL_ALL = self.NBT_levelHeader + self.NBT_levelBody + self.NBT_levelFooter
+        return ":".join("{:02x}".format(ord(c)) for c in NBT_LEVEL_ALL)
+
+
+    def findHexaString(self, HexaString=GameTypeStr):
+        """
+        Input: provide Hexa string that you are looking for.
+            ex: 
+        output: provide the ID into the file of the first binary value found
+              AFTER the HexaString you were searching.
+        
+        """
+        # Lenght of Binary String
+        lbs = len(HexaString)
+        hexChrIndex = 0
+        
+        for i in self.levelFileData:
+            if i == str(HexaString[:1]):
+                if self.levelFileData[hexChrIndex:hexChrIndex+lbs] == HexaString:
+                    binIDbegin = hexChrIndex+lbs+1
+                    return binIDbegin
+            hexChrIndex += 1
+        return ("Bad News ! Couldn't find the string into the Binary data of the file.")
+        ### end of function
+        # yep extra !! : myLevel.levelFileData[23-len(HexaString)11:23]
+
+
+    def changeHexString(self, ID, HexaString, HexaStringLenght ):
+        # go to the ID place.
+
+        # If HexaString == HexaStringLenght
+        # print("Your Hexa String and lenght are same. For your reference, you are in replacement mode.")
+
+        # If HexaString < HexaStringLenght
+        # print("Your Hexa String is shorter than your lenght. For your reference, you are in removal mode.")
+
+        # If HexaString > HexaStringLenght
+        # print("Your Hexa String is longer than your lenght. For your reference, you are inserting more code insertion mode.")
+        
+        #Change the string
+        pass
+
+
+    def checkGameMode(self):
+        """
+        Input : as class, it is Level.dat data file (included)
+        Output : will return if the world is in Creative or Survival mode.
+        """
+        global GameTypeStr
+        
+        GameModeValue_ID = self.findHexaString(GameTypeStr)
+        GameModeValue = self.levelFileData[GameModeValue_ID-1]
+
+        print("Game mode is by default Creative. In survival mode," +\
+              " you will be able to see day and night time." +\
+              " Mobs like Skeletons will also leave longer.")        
+        if GameModeValue == b'\x01' :
+            print("The game is in Creative mode :" + GameModeValue)
+        elif GameModeValue == b'\x00' :
+            print("The game is in Survival mode :" + GameModeValue)
+        else:
+            print("The game is in undetermined mode :" + GameModeValue)
+        return GameModeValue
+
+    # myLevel = mcpi_Mode_mgr()
+    # myLevel.checkMode()
+
+
+    def changeGameMode(self):
+        """
+        add Mob(s) into your Minecraft Pi world.
+        """
+        # NBT_levelHeader
+
+        #check mode:
+        resultCheckGameMode = self.checkGameMode()
+        dictGameMode = [{b'\x00' : "Survival"}, {b'\x01' :"Creative"}]
+        for curDict in dictGameMode:
+            if curDict.has_key(resultCheckGameMode):
+                print("Currently your world is in " + curDict[resultCheckGameMode] + " mode.")
+                
+                userinput = input("Would you like to change the mode to " + "--TO CHANGE THAT MEC----")
+        print("Currently your world is in undetermined mode.")
+        userinput = input("Would you like to change the mode in 0-Survival or 1-Creative [0/1] ?")
+        if userinput == 0:
+            pass
+        elif userinput == 1:
+            pass
+        else:
+            return("can't understand. Aborted.")
+                
+        #GameModeValue_ID = findHexaString(GameTypeStr)
+        #GameModeValue = int(self.levelFileData[GameModeValue_ID])
+        pass        
+
+
+    def changeGameMode2(self, CurrentGameMode):
+        """
+        Suggest to change the game mode to the other.
+        """
+        # NBT_levelHeader
+        #Choose Opposite Game mode:
+        dictGameMode = [{b'\x00' : "Survival"}, {b'\x01' :"Creative"}]
+        currentId = 0
+        swapId = 0
+        
+        while True:
+            if dictGameMode[currentId].has_key(CurrentGameMode):
+                swapID = currentId - 1
+                userinput = input("Would you like to change the mode <"+ str(dictGameMode[currentId]) +"> to <" + str(dictGameMode[swapId]) +"> [1=Yes]/[0=No]?")
+                if userinput == 1:
+                    # change to swapId
+                    print("Change to " + str(dictGameMode[swapId]) + " under progress...")
+                    return("Change done: Enjoy!")
+                elif userinput == 0:
+                    return("Change cancelled.")
+                else:
+                    return("can't understand. Aborted.")
+            currentId += 1
+            if currentId > 2:
+                print("Currently your world is in undetermined mode.")
+                userinput = input("Would you like to change the mode in 0-Survival or 1-Creative [0/1] ?")
+                # NewGameMode
+
+        #GameModeValue_ID = findHexaString(GameTypeStr)
+        #GameModeValue = int(self.levelFileData[GameModeValue_ID])
+        return("newGameMode done.")
+
+   
+
+
+    def saveNewFile(self, filename='level.dat', ):
+        """
+        To save modified data into a new file
+        Input   : level.dat
+        :return: level.dat (with new data)
+
+        """
+        global Mode_ID, NBTTAG_Mode_Creative, NBTTAG_Mode_Survival
+        Mode_ID = b'\x47\x61\x6D\x65\x54\x79\x70\x65' # GameType text is just after
+        # NBTTAG_Mode_Creative = b'\x01' # "\x01\x00\x00\x00"
+        # NBTTAG_Mode_Survival = b'\x00'  # "\x00\x00\x00\x00"
+        
+        # check File Size
+        newEntitiesFileData = self.NBT_levelHeader + self.NBT_levelBody + self.NBT_levelFooter
+        NewNBTLen = len(newEntitiesFileData) - 12 #delete header 12
+        print "Lenght of  : %i " % (NewNBTLen)
+
+        #entities_fs_Dec = self.FileSizeNBTcalc("Dec")
+        #entities_fs_Hex = self.FileSizeNBTcalc("Hex")
+        #print "OLD NBT file data size %s (Hex : %s)" % (entities_fs_Dec, entities_fs_Hex.encode('hex'))
+        #print "NEW NBT file data size %s (Hex : %s)" % (entities_fs_Dec, entities_fs_Hex.encode('hex'))
+              
+        userinput = raw_input("Are you sure you want to change the world to Survival mode? [Y/N] ").lower()
+
+        if userinput in self.yes:
+            # Open the file
+            newLevelFile = open(mcpi_world_path+'/'+filename, 'wb+')
+
+            # Update and conversion of NewNBTLen var to Little Endian value
+            NewNBTlen_LE = struct.pack('<Q', NewNBTLen)
+            NewNBTlen_LE = NewNBTlen_LE[:4]
+            # Update of file size by seeking size Var and Value
+            newLevelFileData = newLevelFileData[:8] + NewNBTlen_LE + newLevelFileData[12:]
+
+            # NEED to Update the value of Mobs as well
+            # newEntitiesFileData = newEntitiesFileData[:26] + NBTTAG_Number_Of_Mobs_Any + newEntitiesFileData[30:]
+            # to be continue .... newLevelFileData =
+            
+            # Writing into the file
+            newLevelFile.write(newLevelFileData)
+
+            print "New File has been created. \n <%s>" % (newLevelFile.name)
+            newLevelFile.close()
+        elif userinput in self.no:
+            return "Action aborted."
+        else:
+            return "Wrong command. Action aborted."     
+
+
+
+    def FileSizeNBTdisplay(self):
+        """
+        Compare value of NBT data size :
+        1st value read from NBT file.
+        2nd value calculated from NBT data size.
+        """
+        sizeInNewEntitiesFile = self.FileSizeNBTread()
+        sizeFileReal = self.FileSizeNBTcalc("Dec")
+        return "Size ValueNBT: %s bytes <=> Real Estimated size of file: %s bytes. " % ( sizeInNewEntitiesFile, sizeFileReal)
+
+    def FileSizeNBTcalc(self, NBTformat):
+        # NBTformat can be "Dec" for decimal and "Hex" for hexa. 
+        # Check of real file size - Don't forget to remove 12 bytes from Header !!
+        # otherwise you might cry like I did...
+        self.entitiesFile.seek(0, os.SEEK_END)
+
+        if NBTformat == "Dec":
+            sizeFileReal = int(self.entitiesFile.tell()) - 12 # 12 is the header of NBT
+            return sizeFileReal
+        elif NBTformat == "Hex":
+            sizeFileReal = int(self.entitiesFile.tell()) - 12 # 12 is the header of NBT
+            sizeFileReal = struct.pack('<L', sizeFileReal)
+            # return ":".join("x{:02x}".format(ord(c)) for c in sizeFileReal) #for a repr 'xd6:x63:x00:x00'
+            return sizeFileReal
+        else:
+            return "Sorry wrong NBTformat."
+
+    def FileSizeNBTread(self):
+        # Check file size NBT Value of file Data file size
+        # entitiesFile = open('entities.dat','rb+')
+        self.entitiesFile.seek(8)
+        # WRONG = sizeInNewEntitiesFile = binascii.b2a_hex(newEntitiesFile.read(4))
+        sizeInNewEntitiesFile = array.array('l', (self.entitiesFile.read(4)))
+        sizeInNewEntitiesFile.byteswap()
+        sizeInNewEntitiesFile = binascii.hexlify(sizeInNewEntitiesFile)
+        sizeInNewEntitiesFile = int(sizeInNewEntitiesFile,16)
+        return sizeInNewEntitiesFile
+
+
+
+
+def willTest():
+    myMCPI = mcpi_mobs_mgr()
+    myMCPI.Mobs_howMany()
+    myMCPI.addMob("Skeleton", 30)
+    myMCPI.saveNewFile()
+    print("Spawn, Update & Save => done")
+    
+
+
 
 ### Examples part ###
 # From Raspberry Pi

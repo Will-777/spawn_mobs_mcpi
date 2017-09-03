@@ -31,8 +31,11 @@ $ cd ~
 You should have a folder in your Raspberry Pi Pi desktop.
 
 ### How to use the script 
-Just Launch it with right click "open" and F5 ...
-I will explain that with the next update.
+in your downloads, you should have a folder nammed "spawn_mobs_mcpi".
+Have a look inside and search "mcpi_mobs.py".
+Just Launch it with right click and "open"/"Python2 IDLE" 
+You should have a window with the code. Then press F5 to launch it.
+I will try to provide some details on the next update...
 
 
 ### Examples part ###
@@ -52,7 +55,16 @@ This process is Offline.
 
 3) Add mobs by adding .addMob to your world, write the type and how many mobs you want.
 ```python
+>>> myMCPI.addMob("Sheep", 10)
+>>> myMCPI.addMob("Chicken", 10)
+>>> myMCPI.addMob("Skeleton", 10)
+>>> myMCPI.addMob("Cow", 10)
+>>> myMCPI.addMob("Creeper", 10)
+>>> myMCPI.addMob("Spider", 10)
 >>> myMCPI.addMob("Pig", 10)
+>>> myMCPI.addMob("Zombie", 10)
+>>> myMCPI.addMob("Zombie Pigman", 10)
+
 ```
  x, y, z coordinate not implemented yet. Sorry.
  If you go around POS: 26.1 / 14.5 / -25.6 on your map
@@ -78,6 +90,7 @@ This process is Offline.
 
 7) Please note that you cannot kill Mobs with weapons. You need to use dynamite.
  some Mobs like Skeletons will die (because of the sun ?)
+ Mobs might hrt each others with arrows or their attacks.
  There is a way to turn your Minecraft Pi world as survival mode.
  There is a way to patch with Binary Patch your Minecraft Pi and unlock Craft
  and your own inventory.
