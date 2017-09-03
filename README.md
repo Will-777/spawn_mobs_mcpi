@@ -1,6 +1,8 @@
 ## spawn_mobs_mcpi [![Awesome](https://cdn.rawgit.com/sindresorhus/awesome/d7305f38d29fed78fa85652e3a63e154dd8e8829/media/badge.svg)](https://github.com/Will-777/spawn_mobs_mcpi.git)
 
-Python script to spawn some mobs in your Minecraft Pi world
+Python script to spawn some mobs in your Minecraft Pi world.
+Animals and monsters... yeah everything's OK !
+Impossible right ? Hum... well... just follow bellowing guidance then !
 
 
 ### Table of Contents
