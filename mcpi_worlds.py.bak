@@ -88,29 +88,29 @@ def selectMCPI_World(mcpi_worlds):
     '''
     while True:
         path_id = 1
-        print('List of MCPI worlds')
+        print 'List of MCPI worlds'
         for i in mcpi_worlds[1:]:
-            print('[%d] %s' % (path_id, i))
+            print '[%d] %s' % (path_id, i)
             path_id += 1
 
         if mcpi_worlds == []:
-            print("ERROR: There is currently no world created under your account. ")
-            print("Path : \n %s" % (mcpi_directory))
-            print("Selection aborted but you can still manully use commands.")
+            print "ERROR: There is currently no world created under your account. "
+            print "Path : \n %s" % (mcpi_directory)
+            print "Selection aborted but you can still manully use commands."
             break
 
             
         #MCPIworld_choice = int(raw_input('Select the MCPI world : '))
-        MCPIworld_choice = eval(input('Select the MCPI world : '))
+        MCPIworld_choice = input('Select the MCPI world : ')
         #assert (mcpi_worlds[MCPIworld_choice]), "Wrong selection ! Please try again."
         
         try:
             mcpi_worlds[MCPIworld_choice]
         except IndexError:
-            print('Wrong selection ! Please try again. \n')
+            print 'Wrong selection ! Please try again. \n'
             
         else:
-            print('\n MCPI world selected :\n' + str(mcpi_worlds[MCPIworld_choice])) 
+            print '\n MCPI world selected :\n' + str(mcpi_worlds[MCPIworld_choice]) 
             return mcpi_worlds[MCPIworld_choice]
 
 

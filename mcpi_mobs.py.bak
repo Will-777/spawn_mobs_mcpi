@@ -22,7 +22,7 @@ Process to install from GitHub explained here:
 git clone https://github.com/Will-777/spawn_mobs_mcpi.git
 
 To make a local test under windows, you can use file path as following:
- mcpi_world_path = 'C:\\Users\\username\myFiles\Programming\Python\MCPI'
+ mcpi_world_path = 'C:\Users\username\myFiles\Programming\Python\MCPI'
 
 In the end of this file in comment, you have an example of how to use
 this script, command 1 by 1.
@@ -43,10 +43,10 @@ import string
 
 try:
     from mcpi_worlds import *
-    print("Import of mcpi_worlds: OK !")
+    print "Import of mcpi_worlds: OK !"
 except ImportError:
     # log.debug('Import of mcpi_worlds: FAILED!', exc_info=True)
-    print("Import of mcpi_worlds: *** FAILED ***")
+    print "Import of mcpi_worlds: *** FAILED ***"
 
 
 mobs_pass_dict = {'Chicken' : b'\x0A\x00\x00\x00', 'Cow' : b'\x0B\x00\x00\x00',
@@ -59,8 +59,8 @@ mobs_agress_dict = {'Zombie' : b'\x20\x00\x00\x00', 'Creeper' : b'\x21\x00\x00\x
 
 mobs_all_dict = dict(mobs_pass_dict, **mobs_agress_dict)
 
-print("Welcome to Minecraft Pi Mobs manager.")
-print("<-- For additional help, use : get_MCPI_Help() -->\n")
+print "Welcome to Minecraft Pi Mobs manager."
+print "<-- For additional help, use : get_MCPI_Help() -->\n"
 # make_MCPI_path()
 mcpi_directory = make_MCPI_path()
 mcpi_worlds = checkMCPI_World(mcpi_directory)
@@ -76,9 +76,9 @@ def manual_display():
     # mcpi_world_path = 'C:\Users\username\myFiles\Programming\Python\MCPI'
     with open(mcpi_world_path+'/entities.dat','rb+') as entitiesFile:
         content = entitiesFile.read()
-        content = insert_spaces(content, list(range(0, 27, 2)))
+        content = insert_spaces(content, range(0, 27, 2))
         # content = insert_spaces(content, range(0, 4, 2))
-        print(binascii.hexlify(content))
+        print binascii.hexlify(content)
 
 
 def read_entities(filename='entities.dat'):
@@ -89,9 +89,9 @@ def read_entities(filename='entities.dat'):
 
 def about_mobs(dic1 = mobs_pass_dict, dic2 = mobs_agress_dict):
     for i in dic1:
-        print(str(i) + ' -> ' + binascii.b2a_hex(dic1.get(i)))
+        print str(i) + ' -> ' + binascii.b2a_hex(dic1.get(i))
     for i in dic2:
-        print(str(i) + ' -> ' + binascii.b2a_hex(dic2.get(i)))
+        print str(i) + ' -> ' + binascii.b2a_hex(dic2.get(i))
     return
 
 
@@ -195,7 +195,7 @@ class mcpi_mobs_mgr(object):
             # ascii_mobs_value = binascii.b2a_hex(entitiesFileData[i+2:i+6])
             index_of_mob = self.NBT_Body[i+2:i+6]
             try:
-                type_of_Mob = list(mobs_all_dict.keys())[list(mobs_all_dict.values()).index(index_of_mob)]
+                type_of_Mob = mobs_all_dict.keys()[mobs_all_dict.values().index(index_of_mob)]
             except ValueError:
                 type_of_Mob = 'Unknown Mob!'
             # print str(mobNumber) + ' - Index: ' + str(i) + ', ' + type_of_Mob
@@ -209,14 +209,14 @@ class mcpi_mobs_mgr(object):
         Print the list of mobs inside
         """
         my_mobs_list = self.Mobs_list_make()
-        print("   ID - Type  (Index)")
-        print("---------------------")
+        print "   ID - Type  (Index)"
+        print "---------------------"
         previous_Mobs = 0
         for each_mobs in my_mobs_list:
             # print each_mobs[0] + ' - ' + each_mobs[2] + ' ('+ each_mobs[1] +')'
             Mobs_size = int(each_mobs[1]) - previous_Mobs
             
-            print(('{:>5} - {} ({}), size:{}' .format(each_mobs[0], each_mobs[2], each_mobs[1], Mobs_size)))
+            print('{:>5} - {} ({}), size:{}' .format(each_mobs[0], each_mobs[2], each_mobs[1], Mobs_size))
             previous_Mobs = int(each_mobs[1])
 
 
@@ -225,7 +225,7 @@ class mcpi_mobs_mgr(object):
         return the number of mobs present on the map for each type of mobs.
         """
         my_mobs_list = self.Mobs_list_make()
-        print("Inside this entities.dat file, there is : ")
+        print "Inside this entities.dat file, there is : "
         
         for self.mobs_type in mobs_all_dict:
             mobs_total_number = 0
@@ -234,7 +234,7 @@ class mcpi_mobs_mgr(object):
                 if  self.mobs_type == each_mobs[2]:
                     mobs_total_number += 1
             # print str(self.mobs_type) + ' = ' + str(mobs_total_number)
-            print(('{:>9} = {:<3}' .format(str(self.mobs_type), str(mobs_total_number))))
+            print('{:>9} = {:<3}' .format(str(self.mobs_type), str(mobs_total_number)))
 
 
     #### MOBS ADD ####
@@ -373,10 +373,10 @@ class mcpi_mobs_mgr(object):
         # Put the first letter in maj and the rest in min
         Mob_Type = Mob_Type.title()
         
-        if Mob_Type not in mobs_all_dict.keys():
-            print("Mob_Type value not recognized. Please use :")
-            for keys in list(mobs_all_dict.keys()):
-                print(keys)
+        if Mob_Type not in mobs_all_dict.viewkeys():
+            print "Mob_Type value not recognized. Please use :"
+            for keys in mobs_all_dict.keys():
+                print keys
         else:
             # Assign the Mob ID
             # Mobs_id = mobs_all_dict.get(Mob_Type)
@@ -402,10 +402,10 @@ class mcpi_mobs_mgr(object):
             for i in range(Mob_Number):
                 self.NBT_Body += NBTTAG_Mobs_Passive_Separator + Mobs_Template
 
-            print("Mob %s added %dx times to the body." % (Mob_Type, Mob_Number))
-            print("Don't forget to save with myMCPI.saveNewFile().")
-            print("Be careful: all or some of data previously")
-            print("into your entities.dat file might be deleted.")
+            print "Mob %s added %dx times to the body." % (Mob_Type, Mob_Number)
+            print "Don't forget to save with myMCPI.saveNewFile()."
+            print "Be careful: all or some of data previously"
+            print "into your entities.dat file might be deleted."
 
         return 
 
@@ -462,14 +462,14 @@ class mcpi_mobs_mgr(object):
         # check File Size
         newEntitiesFileData = self.NBT_Header + self.NBT_Body + self.NBT_Footer
         NewNBTLen = len(newEntitiesFileData) - 12 #delete header 12
-        print("Lenght of  : %i " % (NewNBTLen))
+        print "Lenght of  : %i " % (NewNBTLen)
 
         entities_fs_Dec = self.FileSizeNBTcalc("Dec")
         entities_fs_Hex = self.FileSizeNBTcalc("Hex")
-        print("OLD NBT file data size %s (Hex : %s)" % (entities_fs_Dec, entities_fs_Hex.encode('hex')))
-        print("NEW NBT file data size %s (Hex : %s)" % (entities_fs_Dec, entities_fs_Hex.encode('hex')))
+        print "OLD NBT file data size %s (Hex : %s)" % (entities_fs_Dec, entities_fs_Hex.encode('hex'))
+        print "NEW NBT file data size %s (Hex : %s)" % (entities_fs_Dec, entities_fs_Hex.encode('hex'))
               
-        userinput = input("Are you sure you want to save the file? [Y/N] ").lower()
+        userinput = raw_input("Are you sure you want to save the file? [Y/N] ").lower()
 
         if userinput in self.yes:
             # Open the file
@@ -489,7 +489,7 @@ class mcpi_mobs_mgr(object):
             # Writing into the file
             newEntitiesFile.write(newEntitiesFileData)
 
-            print("New File has been created. \n <%s>" % (newEntitiesFile.name))
+            print "New File has been created. \n <%s>" % (newEntitiesFile.name)
             newEntitiesFile.close()
         elif userinput in self.no:
             return "Action aborted."
@@ -620,15 +620,15 @@ class mcpi_Mode_mgr(object):
         GameModeValue_ID = self.findHexaString(GameTypeStr)
         GameModeValue = self.levelFileData[GameModeValue_ID-1]
 
-        print(("Game mode is by default Creative. In survival mode," +\
+        print("Game mode is by default Creative. In survival mode," +\
               " you will be able to see day and night time." +\
-              " Mobs like Skeletons will also leave longer."))        
+              " Mobs like Skeletons will also leave longer.")        
         if GameModeValue == b'\x01' :
-            print(("The game is in Creative mode :" + GameModeValue))
+            print("The game is in Creative mode :" + GameModeValue)
         elif GameModeValue == b'\x00' :
-            print(("The game is in Survival mode :" + GameModeValue))
+            print("The game is in Survival mode :" + GameModeValue)
         else:
-            print(("The game is in undetermined mode :" + GameModeValue))
+            print("The game is in undetermined mode :" + GameModeValue)
         return GameModeValue
 
     # myLevel = mcpi_Mode_mgr()
@@ -645,12 +645,12 @@ class mcpi_Mode_mgr(object):
         resultCheckGameMode = self.checkGameMode()
         dictGameMode = [{b'\x00' : "Survival"}, {b'\x01' :"Creative"}]
         for curDict in dictGameMode:
-            if resultCheckGameMode in curDict:
-                print(("Currently your world is in " + curDict[resultCheckGameMode] + " mode."))
+            if curDict.has_key(resultCheckGameMode):
+                print("Currently your world is in " + curDict[resultCheckGameMode] + " mode.")
                 
-                userinput = eval(input("Would you like to change the mode to " + "--TO CHANGE THAT MEC----"))
+                userinput = input("Would you like to change the mode to " + "--TO CHANGE THAT MEC----")
         print("Currently your world is in undetermined mode.")
-        userinput = eval(input("Would you like to change the mode in 0-Survival or 1-Creative [0/1] ?"))
+        userinput = input("Would you like to change the mode in 0-Survival or 1-Creative [0/1] ?")
         if userinput == 0:
             pass
         elif userinput == 1:
@@ -674,12 +674,12 @@ class mcpi_Mode_mgr(object):
         swapId = 0
         
         while True:
-            if CurrentGameMode in dictGameMode[currentId]:
+            if dictGameMode[currentId].has_key(CurrentGameMode):
                 swapID = currentId - 1
-                userinput = eval(input("Would you like to change the mode <"+ str(dictGameMode[currentId]) +"> to <" + str(dictGameMode[swapId]) +"> [1=Yes]/[0=No]?"))
+                userinput = input("Would you like to change the mode <"+ str(dictGameMode[currentId]) +"> to <" + str(dictGameMode[swapId]) +"> [1=Yes]/[0=No]?")
                 if userinput == 1:
                     # change to swapId
-                    print(("Change to " + str(dictGameMode[swapId]) + " under progress..."))
+                    print("Change to " + str(dictGameMode[swapId]) + " under progress...")
                     return("Change done: Enjoy!")
                 elif userinput == 0:
                     return("Change cancelled.")
@@ -688,7 +688,7 @@ class mcpi_Mode_mgr(object):
             currentId += 1
             if currentId > 2:
                 print("Currently your world is in undetermined mode.")
-                userinput = eval(input("Would you like to change the mode in 0-Survival or 1-Creative [0/1] ?"))
+                userinput = input("Would you like to change the mode in 0-Survival or 1-Creative [0/1] ?")
                 # NewGameMode
 
         #GameModeValue_ID = findHexaString(GameTypeStr)
@@ -713,14 +713,14 @@ class mcpi_Mode_mgr(object):
         # check File Size
         newEntitiesFileData = self.NBT_levelHeader + self.NBT_levelBody + self.NBT_levelFooter
         NewNBTLen = len(newEntitiesFileData) - 12 #delete header 12
-        print("Lenght of  : %i " % (NewNBTLen))
+        print "Lenght of  : %i " % (NewNBTLen)
 
         #entities_fs_Dec = self.FileSizeNBTcalc("Dec")
         #entities_fs_Hex = self.FileSizeNBTcalc("Hex")
         #print "OLD NBT file data size %s (Hex : %s)" % (entities_fs_Dec, entities_fs_Hex.encode('hex'))
         #print "NEW NBT file data size %s (Hex : %s)" % (entities_fs_Dec, entities_fs_Hex.encode('hex'))
               
-        userinput = input("Are you sure you want to change the world to Survival mode? [Y/N] ").lower()
+        userinput = raw_input("Are you sure you want to change the world to Survival mode? [Y/N] ").lower()
 
         if userinput in self.yes:
             # Open the file
@@ -739,7 +739,7 @@ class mcpi_Mode_mgr(object):
             # Writing into the file
             newLevelFile.write(newLevelFileData)
 
-            print("New File has been created. \n <%s>" % (newLevelFile.name))
+            print "New File has been created. \n <%s>" % (newLevelFile.name)
             newLevelFile.close()
         elif userinput in self.no:
             return "Action aborted."
