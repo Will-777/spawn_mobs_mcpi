@@ -1,15 +1,14 @@
 ## spawn_mobs_mcpi [![Awesome](https://cdn.rawgit.com/sindresorhus/awesome/d7305f38d29fed78fa85652e3a63e154dd8e8829/media/badge.svg)](https://github.com/Will-777/spawn_mobs_mcpi.git)
 
 Python script to spawn some mobs in your Minecraft Pi world.
-Animals and monsters... yeah everything's OK !
-Impossible right ? Hum... well... just follow bellowing guidance then !
+Animals and monsters... yeah everything's OK!
+Impossible right ? Hum... well... just follow the below instructions then!
 
 
 ### Table of Contents
- - [What you need](### What you need)
- - [How to install ](### How to install )
- - [How to use the script ](### How to use the script)
-  - [Ignore Whitespace](#ignore-whitespace)
+ - [What you need](https://github.com/Will-777/spawn_mobs_mcpi#what-you-need)
+ - [How to install ](https://github.com/Will-777/spawn_mobs_mcpi#how-to-install)
+ - [How to use the script ](https://github.com/Will-777/spawn_mobs_mcpi#how-to-use-the-script)
 
 *Read this in other languages: [English](README.md), [French](README.fr.md), [日本語](README.ja.md).*
 
@@ -21,11 +20,11 @@ Minecraft Pi is installed by default.
 
 We open a Terminal session to do it with command line
 
- 1 .In your Raspberry Pi, start a Terminal session.
+ 1. In your Raspberry Pi, start a Terminal session.
 
 We go in the folder we chose for the install (ex: desktop)
 
- 2 .type the following command
+ 2. type the following command
 ```bash
 $ git clone https://github.com/Will-777/spawn_mobs_mcpi.git
 $ cd ~
@@ -114,15 +113,15 @@ This process is Offline.
 - [ ] Your imagination and beyond ..!
 
 ### and remember :
-  - :chicken: Little Endian = 0A 00 00 00
-  -  :cow: Little Endian = 0B 00 00 00
-  -  :pig: Little Endian = 0C 00 00 00
-  -  :sheep: Little Endian = 0D 00 00 00
-  -  :zombie: Little Endian = 20 00 00 00
-  -  :creeper: Little Endian = 21 00 00 00
-  -  :skeleton: Little Endian = 22 00 00 00
-  -  :spider: Little Endian = 23 00 00 00
-  -  :zombie pigman: Little Endian = 24 00 00 00
+  - [![chicken-emoticon-by-pwassonne-d7ua2ro.png](https://i.postimg.cc/3RZ762KD/chicken-emoticon-by-pwassonne-d7ua2ro.png)](https://postimg.cc/PpNBvpvt) Little Endian = 0A 00 00 00
+  -  [![cow-emoticon-by-pwassonne-d6vg79i.png](https://i.postimg.cc/J40m6ySG/cow-emoticon-by-pwassonne-d6vg79i.png)](https://postimg.cc/nMy6MLFJ) Little Endian = 0B 00 00 00
+  -  [![pig-emoticon-by-pwassonne-d7ua25h.png](https://i.postimg.cc/qBj4xcbP/pig-emoticon-by-pwassonne-d7ua25h.png)](https://postimg.cc/fktGwdhC) Little Endian = 0C 00 00 00
+  -  [![white-sheep-emoticon-by-pwassonne-d6zh0rh.png](https://i.postimg.cc/C5P0MYnh/white-sheep-emoticon-by-pwassonne-d6zh0rh.png)](https://postimg.cc/XBCmxRgm) Little Endian = 0D 00 00 00
+  -  [![zombie-emoticon-by-pwassonne-d61ooul.png](https://i.postimg.cc/V6wmDKc8/zombie-emoticon-by-pwassonne-d61ooul.png)](https://postimg.cc/kVT05F41) Little Endian = 20 00 00 00
+  -  [![d3compr-3780ca39-76d2-42cd-b8eb-da79c0d4cabd.gif](https://i.postimg.cc/qv9kCkbg/d3compr-3780ca39-76d2-42cd-b8eb-da79c0d4cabd.gif)](https://postimg.cc/Yvzc5www) Little Endian = 21 00 00 00
+  -  [![skeleton-emoticon-by-pwassonne-d61oncm.png](https://i.postimg.cc/VNnzq3pg/skeleton-emoticon-by-pwassonne-d61oncm.png)](https://postimg.cc/p9VNx125) Little Endian = 22 00 00 00
+  -  [![spider-emoticon-by-pwassonne-d65p64o.png](https://i.postimg.cc/j2dKrC53/spider-emoticon-by-pwassonne-d65p64o.png)](https://postimg.cc/S25H6Scc) Little Endian = 23 00 00 00
+  -  [![zombie-pigman-emoticon-by-pwassonne-d6q6au3.png](https://i.postimg.cc/4ytvs4St/zombie-pigman-emoticon-by-pwassonne-d6q6au3.png)](https://postimg.cc/Fkrkxvms) Little Endian = 24 00 00 00
 
 
 Enjoy ! :+1:
